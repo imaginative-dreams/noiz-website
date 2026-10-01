@@ -1,0 +1,32 @@
+export const musicReleases = Object.freeze([
+  {
+    slug: 'black-bull',
+    title: 'BLACK BULL',
+    artist: 'NOIZ',
+    description: 'Official NOIZ music release.',
+    spotifyUrl: 'https://open.spotify.com/album/7M9srp5VlydelS7H32Eccy',
+    spotifyEmbedUrl: 'https://open.spotify.com/embed/album/7M9srp5VlydelS7H32Eccy',
+    coverUrl: 'https://media.makenoiz.xyz/music/black-bull/social-card.png',
+    releaseDate: null,
+  },
+  {
+    slug: 'turn-the-noiz-up',
+    title: 'TURN THE NOIZ UP',
+    artist: 'NOIZ',
+    description: 'Official NOIZ music release.',
+    spotifyUrl: 'https://open.spotify.com/album/4nozTjIOHURz0YlxGnp44x',
+    spotifyEmbedUrl: 'https://open.spotify.com/embed/album/4nozTjIOHURz0YlxGnp44x',
+    coverUrl: 'https://media.makenoiz.xyz/music/turn-the-noiz-up/social-card.png',
+    releaseDate: null,
+  },
+  {
+    slug: 'inspector-nova',
+    title: 'INSPECTOR NOVA',
+    artist: 'NOIZ',
+    description: 'Official NOIZ music release.',
+    spotifyUrl: 'https://open.spotify.com/album/5TUWCq9it37dKdnzU7ZHSm',
+    spotifyEmbedUrl: 'https://open.spotify.com/embed/album/5TUWCq9it37dKdnzU7ZHSm',
+    coverUrl: 'https://media.makenoiz.xyz/music/inspector-nova/social-card.png',
+    releaseDate: null,
+  },
+]);
