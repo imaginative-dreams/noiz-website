@@ -3,7 +3,10 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "node build.mjs"
+    "build": "node build.mjs",
+    "test": "node --test",
+    "validate:live": "node --env-file-if-exists=.dev.vars scripts/validate-live.mjs",
+    "backfill:global": "node --env-file-if-exists=.dev.vars scripts/backfill-global.mjs"
   },
   "devDependencies": {
     "wrangler": "4.141.0"
