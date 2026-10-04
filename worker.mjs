@@ -100,7 +100,7 @@ function transferCheckedAmount(data) {
  * Return the ANSEM amount sent to `wallet` by one proven NOIZ holder-reward
  * distribution. Returns null for every other kind of transaction.
  */
-export function classifyRewardTransaction(transaction, wallet) {
+export function classifyRewardTransactionRaw(transaction, wallet) {
   if (!transaction || transaction.meta?.err) return null;
   const keys = accountKeys(transaction);
   const distributeIndex = findDistributionInstruction(transaction, keys);
@@ -154,7 +154,12 @@ export function classifyRewardTransaction(transaction, wallet) {
   }
 
   if (rawTotal === 0n || decimals === null) return null;
-  return Number(rawTotal) / (10 ** decimals);
+  return { rawAmount: rawTotal, decimals };
+}
+
+export function classifyRewardTransaction(transaction, wallet) {
+  const reward = classifyRewardTransactionRaw(transaction, wallet);
+  return reward === null ? null : Number(reward.rawAmount) / (10 ** reward.decimals);
 }
 
 async function rpc(rpcUrl, method, params, telemetry, id = 1) {

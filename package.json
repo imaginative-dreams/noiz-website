@@ -5,6 +5,10 @@
   "scripts": {
     "build": "node build.mjs",
     "test": "node --test",
+    "update:rewards:daily": "node --env-file-if-exists=.dev.vars scripts/update-holder-rewards.mjs --mode=daily",
+    "update:rewards:weekly": "node --env-file-if-exists=.dev.vars scripts/update-holder-rewards.mjs --mode=weekly",
+    "update:rewards:daily:dry": "node --env-file-if-exists=.dev.vars scripts/update-holder-rewards.mjs --mode=daily --dry-run",
+    "update:rewards:weekly:dry": "node --env-file-if-exists=.dev.vars scripts/update-holder-rewards.mjs --mode=weekly --dry-run",
     "validate:live": "node --env-file-if-exists=.dev.vars scripts/validate-live.mjs",
     "backfill:global": "node --env-file-if-exists=.dev.vars scripts/backfill-global.mjs"
   },
