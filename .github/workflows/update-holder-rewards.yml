@@ -1,0 +1,72 @@
+name: Update NOIZ holder ranking and price
+
+on:
+  schedule:
+    - cron: '17 04 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: noiz-holder-rewards-update
+  cancel-in-progress: false
+
+jobs:
+  update-current-state:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    env:
+      HELIUS_API_KEY: ${{ secrets.HELIUS_API_KEY }}
+    steps:
+      - name: Check out main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 1
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Require Helius secret
+        shell: bash
+        run: |
+          if [ -z "$HELIUS_API_KEY" ]; then
+            echo "HELIUS_API_KEY GitHub secret is missing; no RPC calls were made." >&2
+            exit 1
+          fi
+
+      - name: Update current holder ranking and price
+        run: node scripts/update-holder-rewards.mjs --mode=daily
+
+      - name: Detect dataset changes
+        id: changes
+        shell: bash
+        run: |
+          if git diff --quiet -- public/data/noiz-holder-rewards.json; then
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "Current-state dataset is unchanged; no commit will be created."
+          else
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Run tests
+        if: steps.changes.outputs.changed == 'true'
+        run: npm test
+
+      - name: Run production build
+        if: steps.changes.outputs.changed == 'true'
+        run: npm run build
+
+      - name: Commit and push updated dataset
+        if: steps.changes.outputs.changed == 'true'
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -- public/data/noiz-holder-rewards.json
+          git commit -m "Update NOIZ holder ranking and price"
+          git push origin HEAD:main
+          echo "Committed rewards dataset as $(git rev-parse HEAD)"

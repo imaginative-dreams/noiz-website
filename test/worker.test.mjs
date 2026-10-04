@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { classifyRewardTransaction, isValidSolanaAddress } from '../worker.mjs';
+import { classifyRewardTransaction, classifyRewardTransactionRaw, isValidSolanaAddress } from '../worker.mjs';
 
 const WALLET = '6iLYbroGEJTvnHzXTxxL1krKKP4HakE4h1mqopxsnjWU';
 const POSITIVE_SIGNATURE = '3s3DzBLJjG87xUzMxvTRDuXs2opz65xY5YqcjixBCrSU8SBPe6pgF3Gci9m6ezmhA3eZkyXL1B927j2CXrk9ocwQ';
@@ -55,6 +55,10 @@ function positiveTransaction() {
 
 test(`known reward ${POSITIVE_SIGNATURE} returns exactly 0.81309 ANSEM`, () => {
   assert.equal(classifyRewardTransaction(positiveTransaction(), WALLET), 0.81309);
+  assert.deepEqual(classifyRewardTransactionRaw(positiveTransaction(), WALLET), {
+    rawAmount: 813090n,
+    decimals: 6,
+  });
 });
 
 test('the distribution selects only the transfer belonging to the queried wallet', () => {
