@@ -12,6 +12,7 @@ export function renderMusicPage(release) {
   const artist = escapeHtml(release.artist);
   const description = escapeHtml(release.description);
   const coverUrl = escapeHtml(release.coverUrl);
+  const coverMimeType = escapeHtml(release.coverMimeType || 'image/png');
   const coverWidth = Number.isInteger(release.coverWidth) ? release.coverWidth : 1200;
   const coverHeight = Number.isInteger(release.coverHeight) ? release.coverHeight : 630;
   const spotifyUrl = escapeHtml(release.spotifyUrl);
@@ -37,7 +38,7 @@ export function renderMusicPage(release) {
   <meta property="og:description" content="${description}">
   <meta property="og:image" content="${coverUrl}">
   <meta property="og:image:secure_url" content="${coverUrl}">
-  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:type" content="${coverMimeType}">
   <meta property="og:image:width" content="${coverWidth}">
   <meta property="og:image:height" content="${coverHeight}">
   <meta property="og:image:alt" content="${escapeHtml(imageAlt)}">

@@ -1,5 +1,18 @@
 export const musicReleases = Object.freeze([
   {
+    slug: 'the-prophet',
+    title: 'THE PROPHET',
+    artist: 'NOIZ',
+    description: 'THE PROPHET — an official NOIZ music release.',
+    spotifyUrl: 'https://open.spotify.com/album/0hpPOSmkfV6UuFBk9oAEOP',
+    spotifyEmbedUrl: 'https://open.spotify.com/embed/album/0hpPOSmkfV6UuFBk9oAEOP',
+    coverUrl: 'https://media.makenoiz.xyz/music/the-prophet/social-card.jpeg',
+    coverMimeType: 'image/jpeg',
+    coverWidth: 1672,
+    coverHeight: 941,
+    releaseDate: null,
+  },
+  {
     slug: 'welcome-to-the-trenches',
     title: 'WELCOME TO THE TRENCHES',
     artist: 'NOIZ',
