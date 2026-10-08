@@ -1,3 +1,5 @@
+import { lyricVideoPostText } from './lyric-videos.mjs';
+
 const SITE_URL = 'https://makenoiz.xyz';
 
 const escapeHtml = (value) => String(value)
@@ -52,6 +54,16 @@ export function renderVideoPage(video) {
   const head = metadata({ canonicalUrl, title: `${video.title} — NOIZ`, description: video.description, imageUrl: video.posterUrl, imageAlt });
   const style = `.film{display:grid;grid-template-columns:minmax(0,1.16fr) minmax(330px,.84fr);gap:clamp(36px,6vw,82px);align-items:center;min-height:calc(100svh - 92px);padding:clamp(40px,6vw,82px) 0}.frame{border:1px solid var(--line);background:#000;box-shadow:0 28px 90px #000}.frame video{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:#000}.copy h1{font:400 clamp(46px,6vw,92px)/.88 'Archivo Black',sans-serif;letter-spacing:-.055em;margin:0;overflow-wrap:anywhere}.description{max-width:540px;margin:26px 0 0;color:#aaa;font-size:13px;line-height:1.75}@media(max-width:860px){.film{grid-template-columns:1fr;min-height:0;padding:38px 0 22px;gap:34px}.copy h1{font-size:clamp(44px,14vw,78px)}}`;
   const body = `<main class="film"><div class="frame"><video controls playsinline preload="metadata" poster="${escapeHtml(video.posterUrl)}"><source src="${escapeHtml(video.videoUrl)}" type="video/mp4"></video></div><div class="copy"><p class="eyebrow">${escapeHtml(video.index)} / NOIZ FILM</p><h1>${escapeHtml(video.title)}</h1><p class="description">${escapeHtml(video.description)}</p><div class="actions"><a class="primary" href="${escapeHtml(video.videoUrl)}" target="_blank" rel="noopener">WATCH ↗</a><a class="secondary" href="${escapeHtml(video.videoUrl)}" download>DOWNLOAD VIDEO ↓</a><button class="secondary" type="button" data-copy-text="${escapeHtml(videoPostText(video))}" data-label="COPY POST">COPY POST</button><button class="secondary" id="copy-link" type="button" data-url="${canonicalUrl}" data-label="COPY LINK">COPY LINK</button></div></div></main>`;
+  return documentShell({ head, body, extraStyle: style });
+}
+
+export function renderLyricVideoPage(video) {
+  const canonicalUrl = `${SITE_URL}/video/${encodeURIComponent(video.slug)}`;
+  const musicUrl = `/music/${encodeURIComponent(video.musicSlug)}`;
+  const imageAlt = `${video.title} — official NOIZ lyric video cover`;
+  const head = metadata({ canonicalUrl, title: `${video.title} — Official Lyric Video`, description: video.description, imageUrl: video.coverUrl, imageAlt });
+  const style = `.film{display:grid;grid-template-columns:minmax(0,1.16fr) minmax(330px,.84fr);gap:clamp(36px,6vw,82px);align-items:center;min-height:calc(100svh - 92px);padding:clamp(40px,6vw,82px) 0}.frame{border:1px solid var(--line);background:#000;box-shadow:0 28px 90px #000}.frame video{display:block;width:100%;aspect-ratio:16/9;object-fit:contain;background:#000}.copy h1{font:400 clamp(42px,5.5vw,82px)/.88 'Archivo Black',sans-serif;letter-spacing:-.055em;margin:0;overflow-wrap:anywhere}.description{max-width:540px;margin:26px 0 0;color:#aaa;font-size:13px;line-height:1.75}.music-back{display:inline-block;margin-top:23px;color:#aaa;font-size:10px;letter-spacing:.17em}.music-back:hover{color:#fff}@media(max-width:860px){.film{grid-template-columns:1fr;min-height:0;padding:38px 0 22px;gap:34px}.copy h1{font-size:clamp(40px,12vw,72px)}}`;
+  const body = `<main class="film"><div class="frame"><video controls playsinline preload="metadata" poster="${escapeHtml(video.coverUrl)}"><source src="${escapeHtml(video.videoUrl)}" type="video/mp4"></video></div><div class="copy"><p class="eyebrow">OFFICIAL LYRIC VIDEO</p><h1>${escapeHtml(video.title)}</h1><p class="description">${escapeHtml(video.description)}</p><a class="music-back" href="${musicUrl}">← MUSIC RELEASE</a><div class="actions"><a class="primary" href="${escapeHtml(video.videoUrl)}" target="_blank" rel="noopener">WATCH ↗</a><a class="secondary" href="${escapeHtml(video.videoUrl)}" download>DOWNLOAD VIDEO ↓</a><button class="secondary" type="button" data-copy-text="${escapeHtml(lyricVideoPostText(video))}" data-label="COPY POST">COPY POST</button><button class="secondary" type="button" data-url="${canonicalUrl}" data-label="COPY LINK">COPY LINK</button></div></div></main>`;
   return documentShell({ head, body, extraStyle: style });
 }
 

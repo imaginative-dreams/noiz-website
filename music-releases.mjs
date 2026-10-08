@@ -11,6 +11,7 @@ export const musicReleases = Object.freeze([
     coverWidth: 1672,
     coverHeight: 941,
     releaseDate: null,
+    lyricVideoSlug: 'the-prophet-lyrics',
   },
   {
     slug: 'welcome-to-the-trenches',
@@ -23,6 +24,7 @@ export const musicReleases = Object.freeze([
     coverWidth: 1672,
     coverHeight: 940,
     releaseDate: null,
+    lyricVideoSlug: 'welcome-to-the-trenches-lyrics',
   },
   {
     slug: 'conviction',
@@ -35,6 +37,7 @@ export const musicReleases = Object.freeze([
     coverWidth: 1731,
     coverHeight: 909,
     releaseDate: null,
+    lyricVideoSlug: 'conviction-lyrics',
   },
   {
     slug: 'black-bull',
@@ -45,6 +48,7 @@ export const musicReleases = Object.freeze([
     spotifyEmbedUrl: 'https://open.spotify.com/embed/album/7M9srp5VlydelS7H32Eccy',
     coverUrl: 'https://media.makenoiz.xyz/music/black-bull/social-card.png',
     releaseDate: null,
+    lyricVideoSlug: 'black-bull-lyrics',
   },
   {
     slug: 'turn-the-noiz-up',
@@ -55,6 +59,7 @@ export const musicReleases = Object.freeze([
     spotifyEmbedUrl: 'https://open.spotify.com/embed/album/4nozTjIOHURz0YlxGnp44x',
     coverUrl: 'https://media.makenoiz.xyz/music/turn-the-noiz-up/social-card.png',
     releaseDate: null,
+    lyricVideoSlug: 'turn-the-noiz-up-lyrics',
   },
   {
     slug: 'inspector-nova',
@@ -65,5 +70,6 @@ export const musicReleases = Object.freeze([
     spotifyEmbedUrl: 'https://open.spotify.com/embed/album/5TUWCq9it37dKdnzU7ZHSm',
     coverUrl: 'https://media.makenoiz.xyz/music/inspector-nova/social-card.png',
     releaseDate: null,
+    lyricVideoSlug: 'wallet-inspector-nova-lyrics',
   },
 ]);

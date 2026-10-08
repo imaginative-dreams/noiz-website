@@ -3,10 +3,12 @@ import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { musicReleases } from '../music-releases.mjs';
 import { renderMusicPage } from '../music-page.mjs';
+import { lyricVideoPostText, lyricVideos, renderLyricVideosSection } from '../lyric-videos.mjs';
 import {
   ansemRewardsPostText,
   globalRewardsPostText,
   renderRewardsPage,
+  renderLyricVideoPage,
   renderVideoPage,
   videoPostText,
 } from '../share-page.mjs';
@@ -116,11 +118,50 @@ test('existing music releases and their canonical share controls remain present'
   }
 });
 
-test('music pages expose video actions only when a downloadable video is configured', () => {
-  const release = { ...musicReleases[0], videoUrl: 'https://media.makenoiz.xyz/music/the-prophet/the-prophet-lyric-video.mp4' };
-  const html = renderMusicPage(release);
-  assert.match(html, /WATCH VIDEO ↗/);
-  assert.match(html, /DOWNLOAD VIDEO ↓/);
-  assert.ok(html.includes(release.videoUrl));
-  assert.doesNotMatch(renderMusicPage(musicReleases[0]), /WATCH VIDEO ↗/);
+test('music pages link each release to its dedicated lyric video page', () => {
+  for (const release of musicReleases) {
+    const html = renderMusicPage(release);
+    assert.match(html, /WATCH LYRIC VIDEO →/);
+    assert.ok(html.includes(`/video/${release.lyricVideoSlug}`));
+    assert.doesNotMatch(html, /DOWNLOAD VIDEO ↓/);
+  }
+});
+
+test('lyric video data stays separate and maps all six music releases to R2', () => {
+  assert.equal(lyricVideos.length, 6);
+  assert.equal(new Set(lyricVideos.map((video) => video.slug)).size, 6);
+  assert.deepEqual(new Set(lyricVideos.map((video) => video.musicSlug)), new Set(musicReleases.map((release) => release.slug)));
+  for (const video of lyricVideos) {
+    assert.match(video.videoUrl, /^https:\/\/media\.makenoiz\.xyz\/music\/.+\/lyric-video\.mp4$/);
+    assert.match(video.coverUrl, /^https:\/\/media\.makenoiz\.xyz\/music\/.+\/lyric-video-cover\.(png|jpeg)$/);
+  }
+});
+
+test('lyric video pages expose artwork metadata, player, actions, and music backlink', () => {
+  for (const video of lyricVideos) {
+    const canonicalUrl = `https://makenoiz.xyz/video/${video.slug}`;
+    const html = renderLyricVideoPage(video);
+    assertSocialPage(html, canonicalUrl);
+    assert.ok(html.includes(video.coverUrl));
+    assert.ok(html.includes(video.videoUrl));
+    assert.ok(html.includes(`/music/${video.musicSlug}`));
+    assert.match(html, /OFFICIAL LYRIC VIDEO/);
+    assert.match(html, /DOWNLOAD VIDEO ↓/);
+    assert.match(html, /COPY POST/);
+    assert.ok(html.includes(lyricVideoPostText(video).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll("'", '&#39;')));
+  }
+});
+
+test('homepage lyric video collection includes every required action and exact post format', () => {
+  const html = renderLyricVideosSection();
+  assert.equal((html.match(/class="video-card lyric-video-card"/g) ?? []).length, 6);
+  for (const video of lyricVideos) {
+    assert.ok(html.includes(`/video/${video.slug}`));
+    assert.ok(html.includes(video.coverUrl));
+    assert.ok(html.includes(video.videoUrl));
+    assert.ok(html.includes(lyricVideoPostText(video).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll("'", '&#39;')));
+  }
+  assert.equal((html.match(/DOWNLOAD VIDEO ↓/g) ?? []).length, 6);
+  assert.equal((html.match(/COPY POST/g) ?? []).length, 6);
+  assert.equal((html.match(/COPY LINK/g) ?? []).length, 6);
 });

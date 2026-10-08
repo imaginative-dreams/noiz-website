@@ -20,9 +20,8 @@ export function renderMusicPage(release) {
   const canonicalUrl = `${SITE_URL}/music/${encodeURIComponent(release.slug)}`;
   const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(`${release.title} — ${release.artist}`)}&url=${encodeURIComponent(canonicalUrl)}`;
   const imageAlt = `${release.title} by ${release.artist} — official artwork`;
-  const videoActions = release.videoUrl
-    ? `<a class="secondary-action" href="${escapeHtml(release.videoUrl)}" target="_blank" rel="noopener">WATCH VIDEO ↗</a>
-          <a class="secondary-action" href="${escapeHtml(release.videoUrl)}" download>DOWNLOAD VIDEO ↓</a>`
+  const videoActions = release.lyricVideoSlug
+    ? `<a class="secondary-action" href="/video/${escapeHtml(release.lyricVideoSlug)}">WATCH LYRIC VIDEO →</a>`
     : '';
 
   return `<!doctype html>
