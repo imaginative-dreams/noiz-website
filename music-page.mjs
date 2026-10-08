@@ -20,6 +20,10 @@ export function renderMusicPage(release) {
   const canonicalUrl = `${SITE_URL}/music/${encodeURIComponent(release.slug)}`;
   const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(`${release.title} — ${release.artist}`)}&url=${encodeURIComponent(canonicalUrl)}`;
   const imageAlt = `${release.title} by ${release.artist} — official artwork`;
+  const videoActions = release.videoUrl
+    ? `<a class="secondary-action" href="${escapeHtml(release.videoUrl)}" target="_blank" rel="noopener">WATCH VIDEO ↗</a>
+          <a class="secondary-action" href="${escapeHtml(release.videoUrl)}" download>DOWNLOAD VIDEO ↓</a>`
+    : '';
 
   return `<!doctype html>
 <html lang="en">
@@ -71,6 +75,7 @@ export function renderMusicPage(release) {
         <iframe class="player" src="${spotifyEmbedUrl}" title="Listen to ${title} by ${artist} on Spotify" loading="eager" allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture" allowfullscreen></iframe>
         <div class="actions">
           <a class="spotify" href="${spotifyUrl}" target="_blank" rel="noopener">LISTEN ON SPOTIFY ↗</a>
+          ${videoActions}
           <a class="secondary-action" href="${escapeHtml(shareUrl)}" target="_blank" rel="noopener">SHARE ON X ↗</a>
           <button class="secondary-action" id="copy-link" type="button" data-url="${canonicalUrl}">COPY LINK</button>
           <a class="secondary-action" href="/">BACK TO WEBSITE</a>
