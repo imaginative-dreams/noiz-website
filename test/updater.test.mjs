@@ -105,7 +105,15 @@ test('Ansem remains an explicit verified holder exception before infrastructure 
 test('dataset migration preserves confirmed totals but does not trust legacy reward signatures as cursors', () => {
   const dataset = JSON.parse(fs.readFileSync(new URL('../public/data/noiz-holder-rewards.json', import.meta.url), 'utf8'));
   const history = migrateHistory(dataset);
-  assert.equal(Object.keys(history).length, 5);
+  const expectedWallets = new Set([
+    ...Object.keys(dataset.holderHistory ?? {}),
+    ...dataset.holders.map((holder) => holder.wallet),
+    dataset.ansem.wallet,
+  ]);
+  assert.deepEqual(new Set(Object.keys(history)), expectedWallets);
+  for (const holder of dataset.holders) assert.ok(history[holder.wallet]);
+  for (const wallet of Object.keys(dataset.holderHistory ?? {})) assert.ok(history[wallet]);
+  assert.ok(history[ANSEM_WALLET]);
   assert.equal(history[ANSEM_WALLET].ansemEarnedRaw, '25703560764');
   assert.equal(history[ANSEM_WALLET].rewardCursorSignature, null);
   assert.equal(history[ANSEM_WALLET].rewardingSince, dataset.ansem.rewardingSince);
