@@ -104,6 +104,21 @@ test('homepage reward posts use live and dataset values rather than hard-coded t
   assert.match(html, /data-copy-url="https:\/\/makenoiz\.xyz\/rewards\/ansem"/);
 });
 
+test('homepage reward copy buttons bind before their dynamic post data arrives', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.match(html, /id="ansem-copy-post" type="button" onclick="copyRaidText\(this\)"/);
+  assert.match(html, /id="global-copy-post" type="button" onclick="copyRaidText\(this\)"/);
+  assert.match(html, /querySelectorAll\('\[data-copy-url\],\[data-copy-post\]'\)\.forEach/);
+  assert.match(html, /document\.querySelector\('#ansem-copy-post'\)\.dataset\.copyPost=post/);
+  assert.match(html, /document\.querySelector\('#global-copy-post'\)\.dataset\.copyPost=post/);
+  assert.match(html, /button\.textContent=copied\?'COPIED ✓':'COPY FAILED'/);
+});
+
+test('homepage reward actions have larger bounded hit targets', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.match(html, /\.raid-actions a,\.raid-actions button\{[^}]*min-height:42px[^}]*border:1px solid #ffffff2b[^}]*padding:10px 14px[^}]*font:400 10px/);
+});
+
 test('reward post helpers preserve the requested copy structure', () => {
   assert.equal(globalRewardsPostText('1,234.56'), 'NOIZ HOLDERS HAVE RECEIVED 1,234.56 ANSEM.\n\n3% of every $NOIZ transaction buys $ANSEM and distributes it to NOIZ holders.\n\nHOLD NOIZ. EARN ANSEM.\n\nhttps://makenoiz.xyz/rewards');
   assert.equal(ansemRewardsPostText('25,703.56', '$3,606.21'), 'ANSEM IS EARNING ANSEM FROM HOLDING NOIZ.\n\n25,703.56 ANSEM earned\n$3,606.21 current value\n\nANSEM HOLDS NOIZ.\nNOIZ PAYS HIM ANSEM.\n\nHOLD NOIZ. EARN ANSEM.\n\nhttps://makenoiz.xyz/rewards/ansem');
