@@ -152,6 +152,20 @@ test('lyric video data stays separate and maps all six music releases to R2', ()
   }
 });
 
+test('each lyric video copy post preserves its title, signature line, spacing, and canonical URL', () => {
+  const expectedPosts = {
+    'black-bull-lyrics': 'BLACK BULL — OFFICIAL LYRIC VIDEO\n\nThey killed the hype — but the bull never died.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/black-bull-lyrics',
+    'turn-the-noiz-up-lyrics': 'TURN THE NOIZ UP — OFFICIAL LYRIC VIDEO\n\nTurn the signal into NOIZ. Turn the NOIZ into a movement.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/turn-the-noiz-up-lyrics',
+    'wallet-inspector-nova-lyrics': 'WALLET INSPECTOR NOVA — OFFICIAL LYRIC VIDEO\n\nFollow the wallets. Find the signal.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/wallet-inspector-nova-lyrics',
+    'conviction-lyrics': 'CONVICTION — SAINT X ANSEM — OFFICIAL LYRIC VIDEO\n\nConviction starts where certainty ends.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/conviction-lyrics',
+    'the-prophet-lyrics': 'THE PROPHET — OFFICIAL LYRIC VIDEO\n\nThe difference between crazy and early… is time.\n\nBe water.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/the-prophet-lyrics',
+    'welcome-to-the-trenches-lyrics': 'WELCOME TO THE TRENCHES — OFFICIAL LYRIC VIDEO\n\nThis is where conviction is tested.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/welcome-to-the-trenches-lyrics',
+  };
+
+  for (const video of lyricVideos) assert.equal(lyricVideoPostText(video), expectedPosts[video.slug]);
+  assert.equal(lyricVideos.filter((video) => lyricVideoPostText(video).includes('Be water.')).length, 1);
+});
+
 test('lyric video pages expose artwork metadata, player, actions, and music backlink', () => {
   for (const video of lyricVideos) {
     const canonicalUrl = `https://makenoiz.xyz/video/${video.slug}`;
