@@ -2,7 +2,13 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { readFile } from 'node:fs/promises';
 import { musicReleases } from '../music-releases.mjs';
-import { renderMusicPage } from '../music-page.mjs';
+import {
+  musicCanonicalUrl,
+  musicDownloadUrl,
+  musicPostText,
+  renderMusicListing,
+  renderMusicPage,
+} from '../music-page.mjs';
 import { lyricVideoPostText, lyricVideos, renderLyricVideosSection } from '../lyric-videos.mjs';
 import {
   ansemRewardsPostText,
@@ -124,12 +130,25 @@ test('reward post helpers preserve the requested copy structure', () => {
   assert.equal(ansemRewardsPostText('25,703.56', '$3,606.21'), 'ANSEM IS EARNING ANSEM FROM HOLDING NOIZ.\n\n25,703.56 ANSEM earned\n$3,606.21 current value\n\nANSEM HOLDS NOIZ.\nNOIZ PAYS HIM ANSEM.\n\nHOLD NOIZ. EARN ANSEM.\n\nhttps://makenoiz.xyz/rewards/ansem');
 });
 
-test('existing music releases and their canonical share controls remain present', async () => {
-  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+test('homepage music listing renders all five actions for every release from shared configuration', async () => {
+  const template = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  const html = renderMusicListing(musicReleases);
+  assert.match(template, /<div id="music-releases"><\/div>/);
+  assert.doesNotMatch(template, /sound-section \.release'\)\.insertAdjacentHTML/);
+  assert.equal((html.match(/class="release"/g) ?? []).length, 6);
+  assert.equal((html.match(/LISTEN ON SPOTIFY ↗/g) ?? []).length, 6);
+  assert.equal((html.match(/SHARE ON X ↗/g) ?? []).length, 6);
+  assert.equal((html.match(/COPY POST/g) ?? []).length, 6);
+  assert.equal((html.match(/COPY LINK/g) ?? []).length, 6);
+  assert.equal((html.match(/DOWNLOAD MP3/g) ?? []).length, 6);
   for (const release of musicReleases) {
-    const canonicalUrl = `https://makenoiz.xyz/music/${release.slug}`;
+    const canonicalUrl = musicCanonicalUrl(release);
+    const postText = musicPostText(release);
     assert.ok(html.includes(`data-copy-url="${canonicalUrl}"`));
-    assert.ok(html.includes(encodeURIComponent(canonicalUrl)));
+    assert.ok(html.includes(`data-copy-post="${postText.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll("'", '&#39;')}"`));
+    assert.ok(html.includes(`href="https://x.com/intent/post?text=${encodeURIComponent(postText)}"`));
+    assert.ok(html.includes(`href="${musicDownloadUrl(release)}" download`));
+    assert.ok(html.includes(`href="${release.spotifyUrl}"`));
   }
 });
 
@@ -184,7 +203,8 @@ test('music pages render the approved narratives and downloadable MP3 actions wi
 
   for (const release of musicReleases) {
     const canonicalUrl = `https://makenoiz.xyz/music/${release.slug}`;
-    const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(`${release.title} — ${release.artist}`)}&url=${encodeURIComponent(canonicalUrl)}`;
+    const postText = musicPostText(release);
+    const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(postText)}`;
     const fileName = decodeURIComponent(new URL(expected[release.slug].mp3Url).pathname.split('/').at(-1));
     const html = renderMusicPage(release);
     assert.deepEqual(release.narrative, expected[release.slug].narrative);
@@ -196,10 +216,34 @@ test('music pages render the approved narratives and downloadable MP3 actions wi
     assert.ok(html.includes(`src="${release.spotifyEmbedUrl}"`));
     assert.ok(html.includes(`href="${release.spotifyUrl}"`));
     assert.ok(html.includes(`href="${shareUrl.replaceAll('&', '&amp;')}"`));
+    assert.ok(html.includes(`data-copy-text="${postText.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll("'", '&#39;')}"`));
     assert.ok(html.includes(`data-url="${canonicalUrl}"`));
     assert.ok(html.includes(`<meta property="og:image" content="${release.coverUrl}">`));
     assert.ok(html.includes(`<meta name="twitter:image" content="${release.coverUrl}">`));
     assert.ok(html.includes(`<meta property="og:description" content="${release.description}">`));
+  }
+});
+
+test('music SHARE ON X and COPY POST use the same exact release-specific text while COPY LINK stays URL-only', () => {
+  const expectedPosts = {
+    'turn-the-noiz-up': 'TURN THE NOIZ UP — NOIZ\n\nA signal becomes a movement when enough people turn it up.\nNOIZ is what happens when conviction gets loud.\n\nhttps://makenoiz.xyz/music/turn-the-noiz-up',
+    'black-bull': 'BLACK BULL — NOIZ\n\nHype dies. Conviction doesn’t.\nA tribute to the Black Bull that kept moving through the red.\n\nhttps://makenoiz.xyz/music/black-bull',
+    'inspector-nova': 'WALLET INSPECTOR NOVA — NOIZ\n\nIn a world full of noise, the wallets tell the truth.\nFollow the money. Find the signal.\n\nhttps://makenoiz.xyz/music/inspector-nova',
+    conviction: 'CONVICTION — SAINT X ANSEM — NOIZ\n\nConviction begins when everyone else needs confirmation.\nA song about believing before the crowd does.\n\nhttps://makenoiz.xyz/music/conviction',
+    'welcome-to-the-trenches': 'WELCOME TO THE TRENCHES — NOIZ\n\nWelcome to the place where narratives are born and conviction is tested.\nSolana never sleeps. Neither do the trenches.\n\nhttps://makenoiz.xyz/music/welcome-to-the-trenches',
+    'the-prophet': 'THE PROPHET — NOIZ\n\nNot about predicting the future. About seeing the signal before it becomes obvious.\nThe difference between crazy and early… is time.\n\nhttps://makenoiz.xyz/music/the-prophet',
+  };
+
+  for (const release of musicReleases) {
+    const canonicalUrl = `https://makenoiz.xyz/music/${release.slug}`;
+    const postText = musicPostText(release);
+    const html = renderMusicPage(release);
+    assert.equal(postText, expectedPosts[release.slug]);
+    assert.ok(html.includes(`href="https://x.com/intent/post?text=${encodeURIComponent(postText)}"`));
+    assert.ok(html.includes(`data-copy-text="${postText.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll("'", '&#39;')}"`));
+    assert.ok(html.includes(`data-url="${canonicalUrl}"`));
+    assert.match(html, /COPY POST/);
+    assert.match(html, /COPY LINK/);
   }
 });
 
@@ -213,14 +257,14 @@ test('lyric video data stays separate and maps all six music releases to R2', ()
   }
 });
 
-test('each lyric video copy post preserves its title, signature line, spacing, and canonical URL', () => {
+test('each lyric video post reuses its music narrative, preserves spacing, and keeps Be water exclusive to The Prophet', () => {
   const expectedPosts = {
-    'black-bull-lyrics': 'BLACK BULL — OFFICIAL LYRIC VIDEO\n\nThey killed the hype — but the bull never died.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/black-bull-lyrics',
-    'turn-the-noiz-up-lyrics': 'TURN THE NOIZ UP — OFFICIAL LYRIC VIDEO\n\nTurn the signal into NOIZ. Turn the NOIZ into a movement.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/turn-the-noiz-up-lyrics',
-    'wallet-inspector-nova-lyrics': 'WALLET INSPECTOR NOVA — OFFICIAL LYRIC VIDEO\n\nFollow the wallets. Find the signal.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/wallet-inspector-nova-lyrics',
-    'conviction-lyrics': 'CONVICTION — SAINT X ANSEM — OFFICIAL LYRIC VIDEO\n\nConviction starts where certainty ends.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/conviction-lyrics',
-    'the-prophet-lyrics': 'THE PROPHET — OFFICIAL LYRIC VIDEO\n\nThe difference between crazy and early… is time.\n\nBe water.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/the-prophet-lyrics',
-    'welcome-to-the-trenches-lyrics': 'WELCOME TO THE TRENCHES — OFFICIAL LYRIC VIDEO\n\nThis is where conviction is tested.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/welcome-to-the-trenches-lyrics',
+    'black-bull-lyrics': 'BLACK BULL — OFFICIAL LYRIC VIDEO\n\nHype dies. Conviction doesn’t.\nA tribute to the Black Bull that kept moving through the red.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/black-bull-lyrics',
+    'turn-the-noiz-up-lyrics': 'TURN THE NOIZ UP — OFFICIAL LYRIC VIDEO\n\nA signal becomes a movement when enough people turn it up.\nNOIZ is what happens when conviction gets loud.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/turn-the-noiz-up-lyrics',
+    'wallet-inspector-nova-lyrics': 'WALLET INSPECTOR NOVA — OFFICIAL LYRIC VIDEO\n\nIn a world full of noise, the wallets tell the truth.\nFollow the money. Find the signal.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/wallet-inspector-nova-lyrics',
+    'conviction-lyrics': 'CONVICTION — SAINT X ANSEM — OFFICIAL LYRIC VIDEO\n\nConviction begins when everyone else needs confirmation.\nA song about believing before the crowd does.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/conviction-lyrics',
+    'the-prophet-lyrics': 'THE PROPHET — OFFICIAL LYRIC VIDEO\n\nNot about predicting the future. About seeing the signal before it becomes obvious.\nThe difference between crazy and early… is time.\n\nBe water.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/the-prophet-lyrics',
+    'welcome-to-the-trenches-lyrics': 'WELCOME TO THE TRENCHES — OFFICIAL LYRIC VIDEO\n\nWelcome to the place where narratives are born and conviction is tested.\nSolana never sleeps. Neither do the trenches.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/welcome-to-the-trenches-lyrics',
   };
 
   for (const video of lyricVideos) assert.equal(lyricVideoPostText(video), expectedPosts[video.slug]);
@@ -237,8 +281,11 @@ test('lyric video pages expose artwork metadata, player, actions, and music back
     assert.ok(html.includes(`/music/${video.musicSlug}`));
     assert.match(html, /OFFICIAL LYRIC VIDEO/);
     assert.match(html, /DOWNLOAD VIDEO ↓/);
+    assert.match(html, /SHARE ON X ↗/);
     assert.match(html, /COPY POST/);
     assert.ok(html.includes(lyricVideoPostText(video).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll("'", '&#39;')));
+    assert.ok(html.includes(`href="https://x.com/intent/post?text=${encodeURIComponent(lyricVideoPostText(video))}"`));
+    assert.ok(html.includes(`data-url="${canonicalUrl}"`));
   }
 });
 

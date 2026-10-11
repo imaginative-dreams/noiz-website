@@ -7,6 +7,31 @@ const escapeHtml = (value) => String(value)
   .replaceAll('"', '&quot;')
   .replaceAll("'", '&#39;');
 
+export function musicCanonicalUrl(release) {
+  return `${SITE_URL}/music/${encodeURIComponent(release.slug)}`;
+}
+
+export function musicDownloadUrl(release) {
+  return `/api/music-download?track=${encodeURIComponent(release.slug)}`;
+}
+
+export function musicPostText(release) {
+  const shareTitle = release.shareTitle || release.title;
+  return `${shareTitle} — ${release.artist}\n\n${release.narrative.join('\n')}\n\n${musicCanonicalUrl(release)}`;
+}
+
+export function renderMusicListing(releases) {
+  return releases.map((release) => {
+    const title = release.listingTitle || release.title;
+    const canonicalUrl = musicCanonicalUrl(release);
+    const postText = musicPostText(release);
+    const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(postText)}`;
+    const spotifyPath = new URL(release.spotifyUrl).pathname.split('/').filter(Boolean).join(':');
+    const spotifyUri = `spotify:${spotifyPath}`;
+    return `<article class="release"><div class="release-meta"><h3>${escapeHtml(title)}</h3></div><div class="spotify-player" data-spotify-uri="${escapeHtml(spotifyUri)}" aria-label="${escapeHtml(title)} on Spotify"></div><div class="release-links"><a class="spotify-link" href="${escapeHtml(release.spotifyUrl)}" target="_blank" rel="noopener">LISTEN ON SPOTIFY ↗</a><a class="spotify-link" href="${escapeHtml(shareUrl)}" target="_blank" rel="noopener">SHARE ON X ↗</a><button class="spotify-link copy-link" type="button" data-copy-post="${escapeHtml(postText)}">COPY POST</button><button class="spotify-link copy-link" type="button" data-copy-url="${canonicalUrl}">COPY LINK</button><a class="spotify-link" href="${musicDownloadUrl(release)}" download>DOWNLOAD MP3</a></div></article>`;
+  }).join('');
+}
+
 export function renderMusicPage(release) {
   const title = escapeHtml(release.title);
   const artist = escapeHtml(release.artist);
@@ -19,9 +44,10 @@ export function renderMusicPage(release) {
   const spotifyEmbedUrl = escapeHtml(release.spotifyEmbedUrl);
   const narrative = release.narrative.map((line) => `<span>${escapeHtml(line)}</span>`).join('');
   const mp3FileName = decodeURIComponent(new URL(release.mp3Url).pathname.split('/').at(-1));
-  const mp3DownloadUrl = `/api/music-download?track=${encodeURIComponent(release.slug)}`;
-  const canonicalUrl = `${SITE_URL}/music/${encodeURIComponent(release.slug)}`;
-  const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(`${release.title} — ${release.artist}`)}&url=${encodeURIComponent(canonicalUrl)}`;
+  const mp3DownloadUrl = musicDownloadUrl(release);
+  const canonicalUrl = musicCanonicalUrl(release);
+  const postText = musicPostText(release);
+  const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(postText)}`;
   const imageAlt = `${release.title} by ${release.artist} — official artwork`;
   const videoActions = release.lyricVideoSlug
     ? `<a class="secondary-action" href="/video/${escapeHtml(release.lyricVideoSlug)}">WATCH LYRIC VIDEO →</a>`
@@ -81,16 +107,17 @@ export function renderMusicPage(release) {
           ${videoActions}
           <a class="secondary-action" href="${mp3DownloadUrl}" download="${escapeHtml(mp3FileName)}">DOWNLOAD MP3</a>
           <a class="secondary-action" href="${escapeHtml(shareUrl)}" target="_blank" rel="noopener">SHARE ON X ↗</a>
-          <button class="secondary-action" id="copy-link" type="button" data-url="${canonicalUrl}">COPY LINK</button>
+          <button class="secondary-action" type="button" data-copy-text="${escapeHtml(postText)}" data-label="COPY POST">COPY POST</button>
+          <button class="secondary-action" type="button" data-url="${canonicalUrl}" data-label="COPY LINK">COPY LINK</button>
           <a class="secondary-action" href="/">BACK TO WEBSITE</a>
         </div>
       </div>
     </main>
   </div>
   <script>
-    const copyButton = document.querySelector('#copy-link');
     function fallbackCopy(text){const field=document.createElement('textarea');field.value=text;field.setAttribute('readonly','');field.style.cssText='position:fixed;opacity:0;pointer-events:none';document.body.append(field);field.select();field.setSelectionRange(0,field.value.length);let copied=false;try{copied=document.execCommand('copy')}catch{}field.remove();return copied}
-    copyButton.addEventListener('click',async()=>{let copied=false;try{if(navigator.clipboard?.writeText)copied=await navigator.clipboard.writeText(copyButton.dataset.url).then(()=>true).catch(()=>false);if(!copied)copied=fallbackCopy(copyButton.dataset.url)}catch{copied=fallbackCopy(copyButton.dataset.url)}copyButton.textContent=copied?'COPIED ✓':'COPY FAILED';setTimeout(()=>copyButton.textContent='COPY LINK',1800)});
+    async function copyAction(button){const text=button.dataset.copyText||button.dataset.url;if(!text)return;const original=button.dataset.label||button.textContent;let copied=false;try{if(navigator.clipboard?.writeText)copied=await navigator.clipboard.writeText(text).then(()=>true).catch(()=>false);if(!copied)copied=fallbackCopy(text)}catch{copied=fallbackCopy(text)}button.textContent=copied?'COPIED ✓':'COPY FAILED';clearTimeout(button._copyTimer);button._copyTimer=setTimeout(()=>button.textContent=original,1800)}
+    document.querySelectorAll('[data-copy-text],[data-url]').forEach(button=>button.addEventListener('click',()=>copyAction(button)));
   </script>
 </body>
 </html>`;

@@ -1,13 +1,14 @@
 import { cp, mkdir, readFile, writeFile } from 'node:fs/promises';
 import { lyricVideos, renderLyricVideosSection } from './lyric-videos.mjs';
 import { musicReleases } from './music-releases.mjs';
-import { renderMusicPage } from './music-page.mjs';
+import { renderMusicListing, renderMusicPage } from './music-page.mjs';
 import { videoReleases } from './video-releases.mjs';
 import { renderLyricVideoPage, renderRewardsPage, renderVideoPage } from './share-page.mjs';
 
 await mkdir('dist', { recursive: true });
 const homepageTemplate = await readFile('index.html', 'utf8');
 const homepage = homepageTemplate
+  .replace('<div id="music-releases"></div>', renderMusicListing(musicReleases))
   .replace('<section id="archive">', `${renderLyricVideosSection()}\n  <section id="archive">`)
   .replace('04 / VIDEO ARCHIVE', '05 / VIDEO ARCHIVE');
 await writeFile('dist/index.html', homepage, 'utf8');

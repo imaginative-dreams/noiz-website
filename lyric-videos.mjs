@@ -1,14 +1,21 @@
+import { musicReleases } from './music-releases.mjs';
+
 const MEDIA_URL = 'https://media.makenoiz.xyz';
 const SITE_URL = 'https://makenoiz.xyz';
+const musicBySlug = new Map(musicReleases.map((release) => [release.slug, release]));
 
 export const lyricVideos = Object.freeze([
-  { slug: 'black-bull-lyrics', musicSlug: 'black-bull', title: 'BLACK BULL', postQuote: 'They killed the hype — but the bull never died.', coverUrl: `${MEDIA_URL}/music/black-bull/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/black-bull/lyric-video.mp4` },
-  { slug: 'turn-the-noiz-up-lyrics', musicSlug: 'turn-the-noiz-up', title: 'TURN THE NOIZ UP', postQuote: 'Turn the signal into NOIZ. Turn the NOIZ into a movement.', coverUrl: `${MEDIA_URL}/music/turn-the-noiz-up/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/turn-the-noiz-up/lyric-video.mp4` },
-  { slug: 'wallet-inspector-nova-lyrics', musicSlug: 'inspector-nova', title: 'WALLET INSPECTOR NOVA', postQuote: 'Follow the wallets. Find the signal.', coverUrl: `${MEDIA_URL}/music/inspector-nova/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/inspector-nova/lyric-video.mp4` },
-  { slug: 'conviction-lyrics', musicSlug: 'conviction', title: 'CONVICTION — SAINT X ANSEM', postQuote: 'Conviction starts where certainty ends.', coverUrl: `${MEDIA_URL}/music/conviction/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/conviction/lyric-video.mp4` },
-  { slug: 'the-prophet-lyrics', musicSlug: 'the-prophet', title: 'THE PROPHET', postQuote: 'The difference between crazy and early… is time.', postExtra: 'Be water.', coverUrl: `${MEDIA_URL}/music/the-prophet/lyric-video-cover.jpeg`, videoUrl: `${MEDIA_URL}/music/the-prophet/lyric-video.mp4` },
-  { slug: 'welcome-to-the-trenches-lyrics', musicSlug: 'welcome-to-the-trenches', title: 'WELCOME TO THE TRENCHES', postQuote: 'This is where conviction is tested.', coverUrl: `${MEDIA_URL}/music/welcome-to-the-trenches/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/welcome-to-the-trenches/lyric-video.mp4` },
-].map((video) => Object.freeze({ ...video, label: 'OFFICIAL LYRIC VIDEO', description: `${video.title} — official lyric video by NOIZ.` })));
+  { slug: 'black-bull-lyrics', musicSlug: 'black-bull', coverUrl: `${MEDIA_URL}/music/black-bull/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/black-bull/lyric-video.mp4` },
+  { slug: 'turn-the-noiz-up-lyrics', musicSlug: 'turn-the-noiz-up', coverUrl: `${MEDIA_URL}/music/turn-the-noiz-up/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/turn-the-noiz-up/lyric-video.mp4` },
+  { slug: 'wallet-inspector-nova-lyrics', musicSlug: 'inspector-nova', coverUrl: `${MEDIA_URL}/music/inspector-nova/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/inspector-nova/lyric-video.mp4` },
+  { slug: 'conviction-lyrics', musicSlug: 'conviction', coverUrl: `${MEDIA_URL}/music/conviction/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/conviction/lyric-video.mp4` },
+  { slug: 'the-prophet-lyrics', musicSlug: 'the-prophet', postExtra: 'Be water.', coverUrl: `${MEDIA_URL}/music/the-prophet/lyric-video-cover.jpeg`, videoUrl: `${MEDIA_URL}/music/the-prophet/lyric-video.mp4` },
+  { slug: 'welcome-to-the-trenches-lyrics', musicSlug: 'welcome-to-the-trenches', coverUrl: `${MEDIA_URL}/music/welcome-to-the-trenches/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/welcome-to-the-trenches/lyric-video.mp4` },
+].map((video) => {
+  const release = musicBySlug.get(video.musicSlug);
+  const title = release.shareTitle || release.title;
+  return Object.freeze({ ...video, title, narrative: release.narrative, label: 'OFFICIAL LYRIC VIDEO', description: `${title} — official lyric video by NOIZ.` });
+}));
 
 const escapeHtml = (value) => String(value)
   .replaceAll('&', '&amp;')
@@ -20,7 +27,7 @@ const escapeHtml = (value) => String(value)
 export function lyricVideoPostText(video) {
   return [
     `${video.title} — OFFICIAL LYRIC VIDEO`,
-    video.postQuote,
+    video.narrative.join('\n'),
     ...(video.postExtra ? [video.postExtra] : []),
     'Watch the lyrics. Feel the NOIZ.',
     `${SITE_URL}/video/${video.slug}`,

@@ -39,6 +39,7 @@ export const musicReleases = Object.freeze([
   {
     slug: 'conviction',
     title: 'CONVICTION - SAINT X ANSEM',
+    shareTitle: 'CONVICTION — SAINT X ANSEM',
     artist: 'NOIZ',
     description: 'CONVICTION - SAINT X ANSEM — an official NOIZ music release.',
     narrative: [
@@ -89,6 +90,8 @@ export const musicReleases = Object.freeze([
   {
     slug: 'inspector-nova',
     title: 'INSPECTOR NOVA',
+    listingTitle: 'WALLET INSPECTOR NOVA',
+    shareTitle: 'WALLET INSPECTOR NOVA',
     artist: 'NOIZ',
     description: 'Official NOIZ music release.',
     narrative: [
