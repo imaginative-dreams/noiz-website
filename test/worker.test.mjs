@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { classifyRewardTransaction, classifyRewardTransactionRaw, isValidSolanaAddress } from '../worker.mjs';
+import { musicReleases } from '../music-releases.mjs';
+import { classifyRewardTransaction, classifyRewardTransactionRaw, handleMusicDownload, isValidSolanaAddress } from '../worker.mjs';
 
 const WALLET = '6iLYbroGEJTvnHzXTxxL1krKKP4HakE4h1mqopxsnjWU';
 const POSITIVE_SIGNATURE = '3s3DzBLJjG87xUzMxvTRDuXs2opz65xY5YqcjixBCrSU8SBPe6pgF3Gci9m6ezmhA3eZkyXL1B927j2CXrk9ocwQ';
@@ -104,4 +105,31 @@ test('the endpoint fails safely when the server-side secret is unavailable', asy
   const response = await worker.fetch(new Request(`https://makenoiz.xyz/api/rewards?wallet=${WALLET}`), {});
   assert.equal(response.status, 503);
   assert.equal((await response.json()).error, 'SERVICE_UNAVAILABLE');
+});
+
+test('the music download endpoint streams only configured R2 MP3s as attachments', async () => {
+  for (const release of musicReleases) {
+    const requested = [];
+    const response = await handleMusicDownload(
+      new Request(`https://makenoiz.xyz/api/music-download?track=${release.slug}`),
+      async (url, options) => {
+        requested.push({ url, options });
+        return new Response('mp3', { status: 200, headers: { 'content-type': 'audio/mpeg' } });
+      },
+    );
+    const fileName = decodeURIComponent(new URL(release.mp3Url).pathname.split('/').at(-1));
+    assert.deepEqual(requested, [{ url: release.mp3Url, options: { method: 'GET' } }]);
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get('content-type'), 'audio/mpeg');
+    assert.ok(response.headers.get('content-disposition').startsWith(`attachment; filename="${fileName}";`));
+    assert.equal(await response.text(), 'mp3');
+  }
+
+  let fetched = false;
+  const missing = await handleMusicDownload(
+    new Request('https://makenoiz.xyz/api/music-download?track=unknown'),
+    async () => { fetched = true; },
+  );
+  assert.equal(missing.status, 404);
+  assert.equal(fetched, false);
 });

@@ -142,6 +142,67 @@ test('music pages link each release to its dedicated lyric video page', () => {
   }
 });
 
+test('music pages render the approved narratives and downloadable MP3 actions without changing sharing metadata', () => {
+  const expected = {
+    'the-prophet': {
+      narrative: ['Not about predicting the future. About seeing the signal before it becomes obvious.', 'The difference between crazy and early… is time.'],
+      mp3Url: 'https://media.makenoiz.xyz/music/mp3/The%20Prophet.mp3',
+      description: 'THE PROPHET — an official NOIZ music release.',
+      coverUrl: 'https://media.makenoiz.xyz/music/the-prophet/social-card.jpeg',
+    },
+    'welcome-to-the-trenches': {
+      narrative: ['Welcome to the place where narratives are born and conviction is tested.', 'Solana never sleeps. Neither do the trenches.'],
+      mp3Url: 'https://media.makenoiz.xyz/music/mp3/Welcome%20to%20the%20Trenches.mp3',
+      description: 'Welcome to the Trenches — an official NOIZ music release.',
+      coverUrl: 'https://media.makenoiz.xyz/music/welcome-to-the-trenches/social-card.png',
+    },
+    conviction: {
+      narrative: ['Conviction begins when everyone else needs confirmation.', 'A song about believing before the crowd does.'],
+      mp3Url: 'https://media.makenoiz.xyz/music/mp3/Black%20Bull%20Conviction.mp3',
+      description: 'CONVICTION - SAINT X ANSEM — an official NOIZ music release.',
+      coverUrl: 'https://media.makenoiz.xyz/music/conviction/social-card.png',
+    },
+    'black-bull': {
+      narrative: ['Hype dies. Conviction doesn’t.', 'A tribute to the Black Bull that kept moving through the red.'],
+      mp3Url: 'https://media.makenoiz.xyz/music/mp3/BLACKBULL.mp3',
+      description: 'Official NOIZ music release.',
+      coverUrl: 'https://media.makenoiz.xyz/music/black-bull/social-card.png',
+    },
+    'turn-the-noiz-up': {
+      narrative: ['A signal becomes a movement when enough people turn it up.', 'NOIZ is what happens when conviction gets loud.'],
+      mp3Url: 'https://media.makenoiz.xyz/music/mp3/TURN%20THE%20NOIZ%20UP.mp3',
+      description: 'Official NOIZ music release.',
+      coverUrl: 'https://media.makenoiz.xyz/music/turn-the-noiz-up/social-card.png',
+    },
+    'inspector-nova': {
+      narrative: ['In a world full of noise, the wallets tell the truth.', 'Follow the money. Find the signal.'],
+      mp3Url: 'https://media.makenoiz.xyz/music/mp3/WALLET%20INSPECTOR%20NOVA.mp3',
+      description: 'Official NOIZ music release.',
+      coverUrl: 'https://media.makenoiz.xyz/music/inspector-nova/social-card.png',
+    },
+  };
+
+  for (const release of musicReleases) {
+    const canonicalUrl = `https://makenoiz.xyz/music/${release.slug}`;
+    const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(`${release.title} — ${release.artist}`)}&url=${encodeURIComponent(canonicalUrl)}`;
+    const fileName = decodeURIComponent(new URL(expected[release.slug].mp3Url).pathname.split('/').at(-1));
+    const html = renderMusicPage(release);
+    assert.deepEqual(release.narrative, expected[release.slug].narrative);
+    assert.equal(release.mp3Url, expected[release.slug].mp3Url);
+    assert.equal(release.description, expected[release.slug].description);
+    assert.equal(release.coverUrl, expected[release.slug].coverUrl);
+    for (const line of release.narrative) assert.ok(html.includes(line));
+    assert.ok(html.includes(`href="/api/music-download?track=${release.slug}" download="${fileName}"`));
+    assert.ok(html.includes(`src="${release.spotifyEmbedUrl}"`));
+    assert.ok(html.includes(`href="${release.spotifyUrl}"`));
+    assert.ok(html.includes(`href="${shareUrl.replaceAll('&', '&amp;')}"`));
+    assert.ok(html.includes(`data-url="${canonicalUrl}"`));
+    assert.ok(html.includes(`<meta property="og:image" content="${release.coverUrl}">`));
+    assert.ok(html.includes(`<meta name="twitter:image" content="${release.coverUrl}">`));
+    assert.ok(html.includes(`<meta property="og:description" content="${release.description}">`));
+  }
+});
+
 test('lyric video data stays separate and maps all six music releases to R2', () => {
   assert.equal(lyricVideos.length, 6);
   assert.equal(new Set(lyricVideos.map((video) => video.slug)).size, 6);

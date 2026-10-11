@@ -1,3 +1,5 @@
+import { musicReleases } from './music-releases.mjs';
+
 const NOIZ_MINT = 'Adgt7dseCq71eN6GDuoUgpsNQp81ZNhq24nrF7pxpump';
 const ANSEM_MINT = '9cRCn9rGT8V2imeM2BaKs13yhMEais3ruM3rPvTGpump';
 const PUMP_PROGRAM = '6EF8rrecthR5Dkzon8Nwu78hRvfCKubJ14M5uBEwF6P';
@@ -35,6 +37,31 @@ function json(data, status = 200, extraHeaders = {}) {
       ...extraHeaders,
     },
   });
+}
+
+export async function handleMusicDownload(request, fetchImpl = fetch) {
+  if (!['GET', 'HEAD'].includes(request.method)) {
+    return json({ error: 'METHOD_NOT_ALLOWED', message: 'Use GET /api/music-download?track=<MUSIC_SLUG>.' }, 405, { allow: 'GET, HEAD' });
+  }
+
+  const url = new URL(request.url);
+  const release = musicReleases.find((item) => item.slug === url.searchParams.get('track'));
+  if (!release?.mp3Url) {
+    return json({ error: 'NOT_FOUND', message: 'Music download not found.' }, 404, { 'cache-control': 'no-store' });
+  }
+
+  try {
+    const upstream = await fetchImpl(release.mp3Url, { method: request.method });
+    if (!upstream.ok) throw new Error(`R2 returned HTTP ${upstream.status}`);
+    const fileName = decodeURIComponent(new URL(release.mp3Url).pathname.split('/').at(-1));
+    const headers = new Headers(upstream.headers);
+    headers.set('content-type', 'audio/mpeg');
+    headers.set('content-disposition', `attachment; filename="${fileName}"; filename*=UTF-8''${encodeURIComponent(fileName)}`);
+    headers.set('x-content-type-options', 'nosniff');
+    return new Response(request.method === 'HEAD' ? null : upstream.body, { status: 200, headers });
+  } catch {
+    return json({ error: 'MP3_UNAVAILABLE', message: 'The MP3 download is temporarily unavailable.' }, 502, { 'cache-control': 'no-store' });
+  }
 }
 
 function decodeBase58(value) {
@@ -373,6 +400,7 @@ async function handleRewards(request, env) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url);
+    if (url.pathname === '/api/music-download') return handleMusicDownload(request);
     if (url.pathname === '/api/rewards') return handleRewards(request, env);
     if (url.pathname.startsWith('/api/')) {
       return json({ error: 'NOT_FOUND', message: 'API route not found.' }, 404, { 'cache-control': 'no-store' });
