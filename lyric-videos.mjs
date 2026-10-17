@@ -5,6 +5,7 @@ const SITE_URL = 'https://makenoiz.xyz';
 const musicBySlug = new Map(musicReleases.map((release) => [release.slug, release]));
 
 export const lyricVideos = Object.freeze([
+  { slug: 'fuck-the-silence-lyrics', musicSlug: 'fuck-the-silence', simplePost: true, postTag: '$NOIZ', coverUrl: `${MEDIA_URL}/music/fuck-the-silence/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/fuck-the-silence/lyric-video.mp4` },
   { slug: 'black-bull-lyrics', musicSlug: 'black-bull', coverUrl: `${MEDIA_URL}/music/black-bull/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/black-bull/lyric-video.mp4` },
   { slug: 'turn-the-noiz-up-lyrics', musicSlug: 'turn-the-noiz-up', coverUrl: `${MEDIA_URL}/music/turn-the-noiz-up/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/turn-the-noiz-up/lyric-video.mp4` },
   { slug: 'wallet-inspector-nova-lyrics', musicSlug: 'inspector-nova', coverUrl: `${MEDIA_URL}/music/inspector-nova/lyric-video-cover.png`, videoUrl: `${MEDIA_URL}/music/inspector-nova/lyric-video.mp4` },
@@ -27,10 +28,11 @@ const escapeHtml = (value) => String(value)
 export function lyricVideoPostText(video) {
   return [
     `${video.title} — OFFICIAL LYRIC VIDEO`,
-    video.narrative.join('\n'),
+    ...(video.simplePost ? [] : [video.narrative.join('\n')]),
     ...(video.postExtra ? [video.postExtra] : []),
     'Watch the lyrics. Feel the NOIZ.',
     `${SITE_URL}/video/${video.slug}`,
+    ...(video.postTag ? [video.postTag] : []),
   ].join('\n\n');
 }
 

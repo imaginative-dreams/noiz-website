@@ -108,7 +108,7 @@ test('the endpoint fails safely when the server-side secret is unavailable', asy
 });
 
 test('the music download endpoint streams only configured R2 MP3s as attachments', async () => {
-  for (const release of musicReleases) {
+  for (const release of musicReleases.filter((item) => item.mp3Url)) {
     const requested = [];
     const response = await handleMusicDownload(
       new Request(`https://makenoiz.xyz/api/music-download?track=${release.slug}`),
@@ -132,4 +132,5 @@ test('the music download endpoint streams only configured R2 MP3s as attachments
   );
   assert.equal(missing.status, 404);
   assert.equal(fetched, false);
+
 });

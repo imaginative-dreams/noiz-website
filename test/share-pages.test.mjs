@@ -55,14 +55,15 @@ test('video pages expose complete social metadata and the native-upload raid wor
   }
 });
 
-test('prepared captions remain concise and include each canonical video URL', () => {
+test('prepared captions include each canonical video URL and preserve the approved new film copy', () => {
   for (const video of videoReleases) {
     const post = videoPostText(video);
     assert.ok(post.startsWith(`${video.title}\n\n${video.description}`));
     assert.ok(post.includes(`Watch the full transmission:\nhttps://makenoiz.xyz/video/${video.slug}`));
     assert.ok(post.endsWith('$NOIZ'));
-    assert.ok(post.length <= 280, `${video.slug} caption exceeds the X limit`);
+    if (video.slug !== 'awakens-the-black-bull') assert.ok(post.length <= 280, `${video.slug} caption exceeds the X limit`);
   }
+  assert.equal(videoPostText(videoReleases.find((video) => video.slug === 'awakens-the-black-bull')), 'AWAKENS THE BLACK BULL\n\nThe signal rises again. The Black Bull is no longer sleeping — it is waking up in full force. What began as a distant pulse is turning into movement, presence and impact.\n\nWatch the full transmission:\nhttps://makenoiz.xyz/video/awakens-the-black-bull\n\n$NOIZ');
 });
 
 test('the required video routes are represented in the release data', () => {
@@ -71,6 +72,7 @@ test('the required video routes are represented in the release data', () => {
   assert.ok(slugs.has('the-first-signal'));
   assert.ok(slugs.has('ascension-of-noiz'));
   assert.ok(slugs.has('where-noiz-was-born'));
+  assert.ok(slugs.has('awakens-the-black-bull'));
 });
 
 test('reward pages expose complete route-specific metadata and reuse current data sources', () => {
@@ -130,24 +132,24 @@ test('reward post helpers preserve the requested copy structure', () => {
   assert.equal(ansemRewardsPostText('25,703.56', '$3,606.21'), 'ANSEM IS EARNING ANSEM FROM HOLDING NOIZ.\n\n25,703.56 ANSEM earned\n$3,606.21 current value\n\nANSEM HOLDS NOIZ.\nNOIZ PAYS HIM ANSEM.\n\nHOLD NOIZ. EARN ANSEM.\n\nhttps://makenoiz.xyz/rewards/ansem');
 });
 
-test('homepage music listing renders all five actions for every release from shared configuration', async () => {
+test('homepage music listing renders shared actions and only configured MP3 downloads', async () => {
   const template = await readFile(new URL('../index.html', import.meta.url), 'utf8');
   const html = renderMusicListing(musicReleases);
   assert.match(template, /<div id="music-releases"><\/div>/);
   assert.doesNotMatch(template, /sound-section \.release'\)\.insertAdjacentHTML/);
-  assert.equal((html.match(/class="release"/g) ?? []).length, 6);
-  assert.equal((html.match(/LISTEN ON SPOTIFY ↗/g) ?? []).length, 6);
-  assert.equal((html.match(/SHARE ON X ↗/g) ?? []).length, 6);
-  assert.equal((html.match(/COPY POST/g) ?? []).length, 6);
-  assert.equal((html.match(/COPY LINK/g) ?? []).length, 6);
-  assert.equal((html.match(/DOWNLOAD MP3/g) ?? []).length, 6);
+  assert.equal((html.match(/class="release"/g) ?? []).length, musicReleases.length);
+  assert.equal((html.match(/LISTEN ON SPOTIFY ↗/g) ?? []).length, musicReleases.length);
+  assert.equal((html.match(/SHARE ON X ↗/g) ?? []).length, musicReleases.length);
+  assert.equal((html.match(/COPY POST/g) ?? []).length, musicReleases.length);
+  assert.equal((html.match(/COPY LINK/g) ?? []).length, musicReleases.length);
+  assert.equal((html.match(/DOWNLOAD MP3/g) ?? []).length, musicReleases.filter((release) => release.mp3Url).length);
   for (const release of musicReleases) {
     const canonicalUrl = musicCanonicalUrl(release);
     const postText = musicPostText(release);
     assert.ok(html.includes(`data-copy-url="${canonicalUrl}"`));
     assert.ok(html.includes(`data-copy-post="${postText.replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll("'", '&#39;')}"`));
     assert.ok(html.includes(`href="https://x.com/intent/post?text=${encodeURIComponent(postText)}"`));
-    assert.ok(html.includes(`href="${musicDownloadUrl(release)}" download`));
+    if (release.mp3Url) assert.ok(html.includes(`href="${musicDownloadUrl(release)}" download`));
     assert.ok(html.includes(`href="${release.spotifyUrl}"`));
   }
 });
@@ -163,6 +165,12 @@ test('music pages link each release to its dedicated lyric video page', () => {
 
 test('music pages render the approved narratives and downloadable MP3 actions without changing sharing metadata', () => {
   const expected = {
+    'fuck-the-silence': {
+      narrative: ['A statement of intent. FUCK THE SILENCE is pure NOIZ pressure — a refusal to stay quiet, a refusal to disappear, and a reminder that the signal gets stronger when people try to suppress it.'],
+      mp3Url: 'https://media.makenoiz.xyz/music/mp3/Fuck%20the%20silence.mp3',
+      description: 'A statement of intent. FUCK THE SILENCE is pure NOIZ pressure — a refusal to stay quiet, a refusal to disappear, and a reminder that the signal gets stronger when people try to suppress it.',
+      coverUrl: 'https://media.makenoiz.xyz/music/fuck-the-silence/social-card.png',
+    },
     'the-prophet': {
       narrative: ['Not about predicting the future. About seeing the signal before it becomes obvious.', 'The difference between crazy and early… is time.'],
       mp3Url: 'https://media.makenoiz.xyz/music/mp3/The%20Prophet.mp3',
@@ -205,14 +213,18 @@ test('music pages render the approved narratives and downloadable MP3 actions wi
     const canonicalUrl = `https://makenoiz.xyz/music/${release.slug}`;
     const postText = musicPostText(release);
     const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(postText)}`;
-    const fileName = decodeURIComponent(new URL(expected[release.slug].mp3Url).pathname.split('/').at(-1));
     const html = renderMusicPage(release);
     assert.deepEqual(release.narrative, expected[release.slug].narrative);
     assert.equal(release.mp3Url, expected[release.slug].mp3Url);
     assert.equal(release.description, expected[release.slug].description);
     assert.equal(release.coverUrl, expected[release.slug].coverUrl);
     for (const line of release.narrative) assert.ok(html.includes(line));
-    assert.ok(html.includes(`href="/api/music-download?track=${release.slug}" download="${fileName}"`));
+    if (release.mp3Url) {
+      const fileName = decodeURIComponent(new URL(expected[release.slug].mp3Url).pathname.split('/').at(-1));
+      assert.ok(html.includes(`href="/api/music-download?track=${release.slug}" download="${fileName}"`));
+    } else {
+      assert.doesNotMatch(html, /DOWNLOAD MP3/);
+    }
     assert.ok(html.includes(`src="${release.spotifyEmbedUrl}"`));
     assert.ok(html.includes(`href="${release.spotifyUrl}"`));
     assert.ok(html.includes(`href="${shareUrl.replaceAll('&', '&amp;')}"`));
@@ -226,6 +238,7 @@ test('music pages render the approved narratives and downloadable MP3 actions wi
 
 test('music SHARE ON X and COPY POST use the same exact release-specific text while COPY LINK stays URL-only', () => {
   const expectedPosts = {
+    'fuck-the-silence': 'FUCK THE SILENCE — NOIZ\n\nA statement of intent. FUCK THE SILENCE is pure NOIZ pressure — a refusal to stay quiet, a refusal to disappear, and a reminder that the signal gets stronger when people try to suppress it.\n\nhttps://makenoiz.xyz/music/fuck-the-silence',
     'turn-the-noiz-up': 'TURN THE NOIZ UP — NOIZ\n\nA signal becomes a movement when enough people turn it up.\nNOIZ is what happens when conviction gets loud.\n\nhttps://makenoiz.xyz/music/turn-the-noiz-up',
     'black-bull': 'BLACK BULL — NOIZ\n\nHype dies. Conviction doesn’t.\nA tribute to the Black Bull that kept moving through the red.\n\nhttps://makenoiz.xyz/music/black-bull',
     'inspector-nova': 'WALLET INSPECTOR NOVA — NOIZ\n\nIn a world full of noise, the wallets tell the truth.\nFollow the money. Find the signal.\n\nhttps://makenoiz.xyz/music/inspector-nova',
@@ -247,9 +260,9 @@ test('music SHARE ON X and COPY POST use the same exact release-specific text wh
   }
 });
 
-test('lyric video data stays separate and maps all six music releases to R2', () => {
-  assert.equal(lyricVideos.length, 6);
-  assert.equal(new Set(lyricVideos.map((video) => video.slug)).size, 6);
+test('lyric video data stays separate and maps every music release to R2', () => {
+  assert.equal(lyricVideos.length, musicReleases.length);
+  assert.equal(new Set(lyricVideos.map((video) => video.slug)).size, musicReleases.length);
   assert.deepEqual(new Set(lyricVideos.map((video) => video.musicSlug)), new Set(musicReleases.map((release) => release.slug)));
   for (const video of lyricVideos) {
     assert.match(video.videoUrl, /^https:\/\/media\.makenoiz\.xyz\/music\/.+\/lyric-video\.mp4$/);
@@ -259,6 +272,7 @@ test('lyric video data stays separate and maps all six music releases to R2', ()
 
 test('each lyric video post reuses its music narrative, preserves spacing, and keeps Be water exclusive to The Prophet', () => {
   const expectedPosts = {
+    'fuck-the-silence-lyrics': 'FUCK THE SILENCE — OFFICIAL LYRIC VIDEO\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/fuck-the-silence-lyrics\n\n$NOIZ',
     'black-bull-lyrics': 'BLACK BULL — OFFICIAL LYRIC VIDEO\n\nHype dies. Conviction doesn’t.\nA tribute to the Black Bull that kept moving through the red.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/black-bull-lyrics',
     'turn-the-noiz-up-lyrics': 'TURN THE NOIZ UP — OFFICIAL LYRIC VIDEO\n\nA signal becomes a movement when enough people turn it up.\nNOIZ is what happens when conviction gets loud.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/turn-the-noiz-up-lyrics',
     'wallet-inspector-nova-lyrics': 'WALLET INSPECTOR NOVA — OFFICIAL LYRIC VIDEO\n\nIn a world full of noise, the wallets tell the truth.\nFollow the money. Find the signal.\n\nWatch the lyrics. Feel the NOIZ.\n\nhttps://makenoiz.xyz/video/wallet-inspector-nova-lyrics',
@@ -291,14 +305,49 @@ test('lyric video pages expose artwork metadata, player, actions, and music back
 
 test('homepage lyric video collection includes every required action and exact post format', () => {
   const html = renderLyricVideosSection();
-  assert.equal((html.match(/class="video-card lyric-video-card"/g) ?? []).length, 6);
+  assert.equal((html.match(/class="video-card lyric-video-card"/g) ?? []).length, lyricVideos.length);
   for (const video of lyricVideos) {
     assert.ok(html.includes(`/video/${video.slug}`));
     assert.ok(html.includes(video.coverUrl));
     assert.ok(html.includes(video.videoUrl));
     assert.ok(html.includes(lyricVideoPostText(video).replaceAll('&', '&amp;').replaceAll('"', '&quot;').replaceAll("'", '&#39;')));
   }
-  assert.equal((html.match(/DOWNLOAD VIDEO ↓/g) ?? []).length, 6);
-  assert.equal((html.match(/COPY POST/g) ?? []).length, 6);
-  assert.equal((html.match(/COPY LINK/g) ?? []).length, 6);
+  assert.equal((html.match(/DOWNLOAD VIDEO ↓/g) ?? []).length, lyricVideos.length);
+  assert.equal((html.match(/COPY POST/g) ?? []).length, lyricVideos.length);
+  assert.equal((html.match(/COPY LINK/g) ?? []).length, lyricVideos.length);
+});
+
+test('homepage includes the responsive NOIZ YouTube channel block', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.match(html, /id="youtube"/);
+  assert.match(html, /NOIZ ON<br>YOUTUBE\./);
+  assert.match(html, /UCe2mJ8FPMcHts3kBu9GsLKg/);
+  assert.match(html, /site\/youtube\/noiz-on-youtube\.png/);
+  assert.match(html, /The signal now has a home on YouTube\./);
+  assert.match(html, /SUBSCRIBE ON YOUTUBE ↗/);
+  assert.match(html, /\.youtube-section\{max-width:1100px;margin:auto;text-align:center\}/);
+  assert.match(html, /\.youtube-art\{display:block;width:min\(100%,1040px\);margin:0 auto/);
+  assert.match(html, /\.youtube-copy\{max-width:760px;margin:auto\}/);
+  assert.doesNotMatch(html, /\.youtube-section\{[^}]*grid-template-columns/);
+});
+
+test('homepage includes sticky desktop and compact mobile anchor navigation', async () => {
+  const html = await readFile(new URL('../index.html', import.meta.url), 'utf8');
+  assert.match(html, /<header class="site-nav" id="site-nav">/);
+  assert.match(html, /<main id="top">/);
+  for (const [href, desktopLabel] of [
+    ['#archive', 'FILMS'],
+    ['#sound', 'MUSIC'],
+    ['#lyric-videos', 'LYRICS'],
+    ['#rewards', 'REWARDS'],
+    ['#youtube', 'YOUTUBE'],
+  ]) {
+    assert.match(html, new RegExp(`<a href="${href}">${desktopLabel}</a>`));
+  }
+  assert.match(html, /class="site-brand" href="#top">NOIZ<\/a>/);
+  assert.match(html, /id="menu-toggle"[^>]+aria-expanded="false"[^>]+aria-controls="mobile-nav"/);
+  assert.match(html, /<nav class="mobile-nav" id="mobile-nav"[^>]*>[^<]*<a href="#archive">FILMS<\/a><a href="#sound">MUSIC<\/a><a href="#lyric-videos">LYRIC VIDEOS<\/a>/);
+  assert.match(html, /section\[id\],main\[id\]\{scroll-margin-top:70px\}/);
+  assert.match(html, /@media\(prefers-reduced-motion:reduce\)\{[^}]*scroll-behavior:auto!important/);
+  assert.match(html, /mobileNav\.querySelectorAll\('a'\).*closeMobileNav/);
 });

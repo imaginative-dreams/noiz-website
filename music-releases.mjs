@@ -1,5 +1,22 @@
 export const musicReleases = Object.freeze([
   {
+    slug: 'fuck-the-silence',
+    title: 'FUCK THE SILENCE',
+    artist: 'NOIZ',
+    description: 'A statement of intent. FUCK THE SILENCE is pure NOIZ pressure — a refusal to stay quiet, a refusal to disappear, and a reminder that the signal gets stronger when people try to suppress it.',
+    narrative: [
+      'A statement of intent. FUCK THE SILENCE is pure NOIZ pressure — a refusal to stay quiet, a refusal to disappear, and a reminder that the signal gets stronger when people try to suppress it.',
+    ],
+    mp3Url: 'https://media.makenoiz.xyz/music/mp3/Fuck%20the%20silence.mp3',
+    spotifyUrl: 'https://open.spotify.com/album/0nUy1cbiNIgpHufq5nM3OT',
+    spotifyEmbedUrl: 'https://open.spotify.com/embed/album/0nUy1cbiNIgpHufq5nM3OT',
+    coverUrl: 'https://media.makenoiz.xyz/music/fuck-the-silence/social-card.png',
+    coverWidth: 1672,
+    coverHeight: 941,
+    releaseDate: null,
+    lyricVideoSlug: 'fuck-the-silence-lyrics',
+  },
+  {
     slug: 'the-prophet',
     title: 'THE PROPHET',
     artist: 'NOIZ',

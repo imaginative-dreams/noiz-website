@@ -63,4 +63,12 @@ export const videoReleases = Object.freeze([
     posterUrl: 'https://media.makenoiz.xyz/thumbnails/thumbnail-07-where-noiz-was-born.png',
     videoUrl: 'https://media.makenoiz.xyz/videos/07-WHERE-NOIZ-WAS-BORN.mp4',
   },
+  {
+    index: '08',
+    slug: 'awakens-the-black-bull',
+    title: 'AWAKENS THE BLACK BULL',
+    description: 'The signal rises again. The Black Bull is no longer sleeping — it is waking up in full force. What began as a distant pulse is turning into movement, presence and impact.',
+    posterUrl: 'https://media.makenoiz.xyz/thumbnails/thumbnail-08-awakens-the-black-bull.png',
+    videoUrl: 'https://media.makenoiz.xyz/videos/08-AWAKENS-THE-BLACK-BULL.mp4',
+  },
 ]);

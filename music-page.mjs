@@ -12,7 +12,7 @@ export function musicCanonicalUrl(release) {
 }
 
 export function musicDownloadUrl(release) {
-  return `/api/music-download?track=${encodeURIComponent(release.slug)}`;
+  return release.mp3Url ? `/api/music-download?track=${encodeURIComponent(release.slug)}` : null;
 }
 
 export function musicPostText(release) {
@@ -28,7 +28,10 @@ export function renderMusicListing(releases) {
     const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(postText)}`;
     const spotifyPath = new URL(release.spotifyUrl).pathname.split('/').filter(Boolean).join(':');
     const spotifyUri = `spotify:${spotifyPath}`;
-    return `<article class="release"><div class="release-meta"><h3>${escapeHtml(title)}</h3></div><div class="spotify-player" data-spotify-uri="${escapeHtml(spotifyUri)}" aria-label="${escapeHtml(title)} on Spotify"></div><div class="release-links"><a class="spotify-link" href="${escapeHtml(release.spotifyUrl)}" target="_blank" rel="noopener">LISTEN ON SPOTIFY ↗</a><a class="spotify-link" href="${escapeHtml(shareUrl)}" target="_blank" rel="noopener">SHARE ON X ↗</a><button class="spotify-link copy-link" type="button" data-copy-post="${escapeHtml(postText)}">COPY POST</button><button class="spotify-link copy-link" type="button" data-copy-url="${canonicalUrl}">COPY LINK</button><a class="spotify-link" href="${musicDownloadUrl(release)}" download>DOWNLOAD MP3</a></div></article>`;
+    const downloadAction = release.mp3Url
+      ? `<a class="spotify-link" href="${musicDownloadUrl(release)}" download>DOWNLOAD MP3</a>`
+      : '';
+    return `<article class="release"><div class="release-meta"><h3>${escapeHtml(title)}</h3></div><div class="spotify-player" data-spotify-uri="${escapeHtml(spotifyUri)}" aria-label="${escapeHtml(title)} on Spotify"></div><div class="release-links"><a class="spotify-link" href="${escapeHtml(release.spotifyUrl)}" target="_blank" rel="noopener">LISTEN ON SPOTIFY ↗</a><a class="spotify-link" href="${escapeHtml(shareUrl)}" target="_blank" rel="noopener">SHARE ON X ↗</a><button class="spotify-link copy-link" type="button" data-copy-post="${escapeHtml(postText)}">COPY POST</button><button class="spotify-link copy-link" type="button" data-copy-url="${canonicalUrl}">COPY LINK</button>${downloadAction}</div></article>`;
   }).join('');
 }
 
@@ -43,8 +46,9 @@ export function renderMusicPage(release) {
   const spotifyUrl = escapeHtml(release.spotifyUrl);
   const spotifyEmbedUrl = escapeHtml(release.spotifyEmbedUrl);
   const narrative = release.narrative.map((line) => `<span>${escapeHtml(line)}</span>`).join('');
-  const mp3FileName = decodeURIComponent(new URL(release.mp3Url).pathname.split('/').at(-1));
-  const mp3DownloadUrl = musicDownloadUrl(release);
+  const downloadAction = release.mp3Url
+    ? `<a class="secondary-action" href="${musicDownloadUrl(release)}" download="${escapeHtml(decodeURIComponent(new URL(release.mp3Url).pathname.split('/').at(-1)))}">DOWNLOAD MP3</a>`
+    : '';
   const canonicalUrl = musicCanonicalUrl(release);
   const postText = musicPostText(release);
   const shareUrl = `https://x.com/intent/post?text=${encodeURIComponent(postText)}`;
@@ -105,7 +109,7 @@ export function renderMusicPage(release) {
         <div class="actions">
           <a class="spotify" href="${spotifyUrl}" target="_blank" rel="noopener">LISTEN ON SPOTIFY ↗</a>
           ${videoActions}
-          <a class="secondary-action" href="${mp3DownloadUrl}" download="${escapeHtml(mp3FileName)}">DOWNLOAD MP3</a>
+          ${downloadAction}
           <a class="secondary-action" href="${escapeHtml(shareUrl)}" target="_blank" rel="noopener">SHARE ON X ↗</a>
           <button class="secondary-action" type="button" data-copy-text="${escapeHtml(postText)}" data-label="COPY POST">COPY POST</button>
           <button class="secondary-action" type="button" data-url="${canonicalUrl}" data-label="COPY LINK">COPY LINK</button>
