@@ -1,6 +1,6 @@
 {
-  "datasetUpdatedAt": "2026-10-19T09:52:08.793Z",
-  "ansemPriceUsd": 0.1019,
+  "datasetUpdatedAt": "2026-10-20T09:24:14.941Z",
+  "ansemPriceUsd": 0.09198,
   "rewardSource": "BusbejBxcb74pQ5uDfTzNgN2vmcqAMPh4q7tkZaUEnMb",
   "holders": [
     {
@@ -32,7 +32,7 @@
       "rewardingSince": "2026-09-22T13:36:35.000Z",
       "earnedInDays": 11.364291,
       "ansemEarned": 2212.91108,
-      "ansemUsdValue": 225.495639,
+      "ansemUsdValue": 203.543561,
       "rewardCount": 1494,
       "firstRewardAt": "2026-09-22T13:36:35.000Z",
       "lastRewardAt": "2026-10-03T21:15:27.000Z",
@@ -70,7 +70,7 @@
       "rewardingSince": null,
       "earnedInDays": null,
       "ansemEarned": null,
-      "ansemEarnedRaw": null,
+      "ansemEarnedRaw": "0",
       "ansemUsdValue": null,
       "rewardCount": null,
       "firstRewardAt": null,
@@ -111,7 +111,7 @@
     "rewardingSince": "2026-09-12T23:23:36.000Z",
     "earnedInDays": 20.956641,
     "ansemEarned": 25703.560764,
-    "ansemUsdValue": 2619.192842,
+    "ansemUsdValue": 2364.213519,
     "rewardCount": 2607,
     "firstRewardAt": "2026-09-12T23:23:36.000Z",
     "lastRewardAt": "2026-10-03T21:15:38.000Z",
@@ -122,8 +122,8 @@
     "rewardCursorSignature": null,
     "tokenAccount": "86GEntc2BA8MHBzKTfSS9kD3ArEspzGWJhaxAfXhoL15"
   },
-  "rankingUpdatedAt": "2026-10-19T09:52:08.793Z",
-  "priceUpdatedAt": "2026-10-19T09:52:08.793Z",
+  "rankingUpdatedAt": "2026-10-20T09:24:14.941Z",
+  "priceUpdatedAt": "2026-10-20T09:24:14.941Z",
   "rewardsUpdatedAt": "2026-10-03T22:21:09.761Z",
   "holderHistory": {
     "2nKeNVKDFsj6zGsU1DzgxRzXPKhxxFvCDhA9d5V3wT21": {
@@ -153,7 +153,7 @@
       "rewardingSince": "2026-09-22T13:36:35.000Z",
       "earnedInDays": 11.364291,
       "ansemEarned": 2212.91108,
-      "ansemUsdValue": 225.495639,
+      "ansemUsdValue": 203.543561,
       "rewardCount": 1494,
       "firstRewardAt": "2026-09-22T13:36:35.000Z",
       "lastRewardAt": "2026-10-03T21:15:27.000Z",
@@ -171,7 +171,7 @@
       "rewardingSince": "2026-09-12T23:23:36.000Z",
       "earnedInDays": 20.956641,
       "ansemEarned": 25703.560764,
-      "ansemUsdValue": 2619.192842,
+      "ansemUsdValue": 2364.213519,
       "rewardCount": 2607,
       "firstRewardAt": "2026-09-12T23:23:36.000Z",
       "lastRewardAt": "2026-10-03T21:15:38.000Z",
@@ -346,7 +346,7 @@
       "rewardingSince": null,
       "earnedInDays": null,
       "ansemEarned": null,
-      "ansemEarnedRaw": null,
+      "ansemEarnedRaw": "0",
       "ansemUsdValue": null,
       "rewardCount": null,
       "firstRewardAt": null,
@@ -362,7 +362,7 @@
   "updateState": {
     "version": 2,
     "lastDailyRun": {
-      "completedAt": "2026-10-19T09:52:08.793Z",
+      "completedAt": "2026-10-20T09:24:14.941Z",
       "estimatedHeliusCredits": 50,
       "rpcCalls": 5,
       "retries": 0,
