@@ -1,6 +1,6 @@
 {
-  "datasetUpdatedAt": "2026-11-07T11:02:08.015Z",
-  "ansemPriceUsd": 0.04729,
+  "datasetUpdatedAt": "2026-11-08T11:15:11.509Z",
+  "ansemPriceUsd": 0.04269,
   "rewardSource": "BusbejBxcb74pQ5uDfTzNgN2vmcqAMPh4q7tkZaUEnMb",
   "holders": [
     {
@@ -19,8 +19,8 @@
       "lastSignature": null,
       "rewardCursorSignature": null,
       "rank": 1,
-      "noizBalance": 29016639.210394,
-      "supplyPercentage": 3.044851,
+      "noizBalance": 29736047.252788,
+      "supplyPercentage": 3.120342,
       "tokenAccount": "4dP2n14TU9p9DJK6BSBzHtkt9iNyfGqgHFkdTKhht5dy"
     },
     {
@@ -32,7 +32,7 @@
       "rewardingSince": "2026-09-22T13:36:35.000Z",
       "earnedInDays": 11.364291,
       "ansemEarned": 2212.91108,
-      "ansemUsdValue": 104.648565,
+      "ansemUsdValue": 94.469174,
       "rewardCount": 1494,
       "firstRewardAt": "2026-09-22T13:36:35.000Z",
       "lastRewardAt": "2026-10-03T21:15:27.000Z",
@@ -41,26 +41,6 @@
       "ansemEarnedRaw": "2212911080",
       "rewardCursorSignature": null,
       "tokenAccount": "RcgovyD2AaQPnpb9ne8B35FJ9pWQFNpyFdfEPNoKVYh"
-    },
-    {
-      "wallet": "FaSCBxCRT1onHswho3rpFoGdjXmPc424kapSMDoCnouC",
-      "label": null,
-      "rewardStatus": "pending",
-      "pendingReason": "Historical rewards require a deliberate manual initialization.",
-      "rewardingSince": null,
-      "earnedInDays": null,
-      "ansemEarned": null,
-      "ansemEarnedRaw": "0",
-      "ansemUsdValue": null,
-      "rewardCount": null,
-      "firstRewardAt": null,
-      "lastRewardAt": null,
-      "lastSignature": null,
-      "rewardCursorSignature": null,
-      "rank": 3,
-      "noizBalance": 24502734.993816,
-      "supplyPercentage": 2.571186,
-      "tokenAccount": "8TJYNZ8CauLEzb8Mnp9wW3U9kRPAUU9aBTN8ECFTf5Kq"
     },
     {
       "wallet": "FHGfMfSFdxDsmVP9own9Yqp2GLyZfuzLfrE7kLjR26ap",
@@ -77,13 +57,33 @@
       "lastRewardAt": null,
       "lastSignature": null,
       "rewardCursorSignature": null,
-      "rank": 4,
-      "noizBalance": 23670668.420497,
-      "supplyPercentage": 2.483873,
+      "rank": 3,
+      "noizBalance": 25481719.535175,
+      "supplyPercentage": 2.673915,
       "tokenAccount": "DYCixejJfiuuxTeVZRr3D24kYuQc54txW3euhS6sE5k5"
     },
     {
-      "wallet": "AbYt8TLXC1EiUEesVC8fuiJU9LoSbxFnbdzxCRaNNb2f",
+      "wallet": "3imKME8im3MZjnUSNMNK4w16DtEQyNUrvpBDkQxN85ft",
+      "label": null,
+      "rewardStatus": "pending",
+      "pendingReason": "Historical rewards require a deliberate manual initialization.",
+      "rewardingSince": null,
+      "earnedInDays": null,
+      "ansemEarned": null,
+      "ansemEarnedRaw": null,
+      "ansemUsdValue": null,
+      "rewardCount": null,
+      "firstRewardAt": null,
+      "lastRewardAt": null,
+      "lastSignature": null,
+      "rewardCursorSignature": null,
+      "rank": 4,
+      "noizBalance": 25000000.987139,
+      "supplyPercentage": 2.623366,
+      "tokenAccount": "FzG4itQpwbDPYstgEmB3HWFQga1txXS2XDcd9LQgFGXe"
+    },
+    {
+      "wallet": "FaSCBxCRT1onHswho3rpFoGdjXmPc424kapSMDoCnouC",
       "label": null,
       "rewardStatus": "pending",
       "pendingReason": "Historical rewards require a deliberate manual initialization.",
@@ -98,9 +98,9 @@
       "lastSignature": null,
       "rewardCursorSignature": null,
       "rank": 5,
-      "noizBalance": 22557428.100227,
-      "supplyPercentage": 2.367056,
-      "tokenAccount": "22h2E1hVwghGm7h2MMvrUWi8SP4zLQa71PmwKuEfobRz"
+      "noizBalance": 24502734.993816,
+      "supplyPercentage": 2.571186,
+      "tokenAccount": "8TJYNZ8CauLEzb8Mnp9wW3U9kRPAUU9aBTN8ECFTf5Kq"
     }
   ],
   "ansem": {
@@ -111,7 +111,7 @@
     "rewardingSince": "2026-09-12T23:23:36.000Z",
     "earnedInDays": 20.956641,
     "ansemEarned": 25703.560764,
-    "ansemUsdValue": 1215.521389,
+    "ansemUsdValue": 1097.285009,
     "rewardCount": 2607,
     "firstRewardAt": "2026-09-12T23:23:36.000Z",
     "lastRewardAt": "2026-10-03T21:15:38.000Z",
@@ -122,8 +122,8 @@
     "rewardCursorSignature": null,
     "tokenAccount": "86GEntc2BA8MHBzKTfSS9kD3ArEspzGWJhaxAfXhoL15"
   },
-  "rankingUpdatedAt": "2026-11-07T11:02:08.015Z",
-  "priceUpdatedAt": "2026-11-07T11:02:08.015Z",
+  "rankingUpdatedAt": "2026-11-08T11:15:11.509Z",
+  "priceUpdatedAt": "2026-11-08T11:15:11.509Z",
   "rewardsUpdatedAt": "2026-10-03T22:21:09.761Z",
   "holderHistory": {
     "2nKeNVKDFsj6zGsU1DzgxRzXPKhxxFvCDhA9d5V3wT21": {
@@ -153,7 +153,7 @@
       "rewardingSince": "2026-09-22T13:36:35.000Z",
       "earnedInDays": 11.364291,
       "ansemEarned": 2212.91108,
-      "ansemUsdValue": 104.648565,
+      "ansemUsdValue": 94.469174,
       "rewardCount": 1494,
       "firstRewardAt": "2026-09-22T13:36:35.000Z",
       "lastRewardAt": "2026-10-03T21:15:27.000Z",
@@ -171,7 +171,7 @@
       "rewardingSince": "2026-09-12T23:23:36.000Z",
       "earnedInDays": 20.956641,
       "ansemEarned": 25703.560764,
-      "ansemUsdValue": 1215.521389,
+      "ansemUsdValue": 1097.285009,
       "rewardCount": 2607,
       "firstRewardAt": "2026-09-12T23:23:36.000Z",
       "lastRewardAt": "2026-10-03T21:15:38.000Z",
@@ -234,8 +234,8 @@
       "lastSignature": null,
       "rewardCursorSignature": null,
       "rank": 1,
-      "noizBalance": 29016639.210394,
-      "supplyPercentage": 3.044851,
+      "noizBalance": 29736047.252788,
+      "supplyPercentage": 3.120342,
       "tokenAccount": "4dP2n14TU9p9DJK6BSBzHtkt9iNyfGqgHFkdTKhht5dy"
     },
     "HCFzDtn9xU2G9Q2ELxwmJhmprZ7o6aAzjsQ1GN9Ch5Ct": {
@@ -333,7 +333,7 @@
       "lastRewardAt": null,
       "lastSignature": null,
       "rewardCursorSignature": null,
-      "rank": 3,
+      "rank": 5,
       "noizBalance": 24502734.993816,
       "supplyPercentage": 2.571186,
       "tokenAccount": "8TJYNZ8CauLEzb8Mnp9wW3U9kRPAUU9aBTN8ECFTf5Kq"
@@ -353,9 +353,9 @@
       "lastRewardAt": null,
       "lastSignature": null,
       "rewardCursorSignature": null,
-      "rank": 4,
-      "noizBalance": 23670668.420497,
-      "supplyPercentage": 2.483873,
+      "rank": 3,
+      "noizBalance": 25481719.535175,
+      "supplyPercentage": 2.673915,
       "tokenAccount": "DYCixejJfiuuxTeVZRr3D24kYuQc54txW3euhS6sE5k5"
     },
     "8dut5xTs5V7EG9ccek11xDG5eBHkfYc3NdqcxjtWNsbS": {
@@ -417,12 +417,32 @@
       "noizBalance": 25020334.460292,
       "supplyPercentage": 2.6255,
       "tokenAccount": "Gbh2vJUpRepMcKk3VthJfprAmF53a6ejUsgbr9GkR6HK"
+    },
+    "3imKME8im3MZjnUSNMNK4w16DtEQyNUrvpBDkQxN85ft": {
+      "wallet": "3imKME8im3MZjnUSNMNK4w16DtEQyNUrvpBDkQxN85ft",
+      "label": null,
+      "rewardStatus": "pending",
+      "pendingReason": "Historical rewards require a deliberate manual initialization.",
+      "rewardingSince": null,
+      "earnedInDays": null,
+      "ansemEarned": null,
+      "ansemEarnedRaw": null,
+      "ansemUsdValue": null,
+      "rewardCount": null,
+      "firstRewardAt": null,
+      "lastRewardAt": null,
+      "lastSignature": null,
+      "rewardCursorSignature": null,
+      "rank": 4,
+      "noizBalance": 25000000.987139,
+      "supplyPercentage": 2.623366,
+      "tokenAccount": "FzG4itQpwbDPYstgEmB3HWFQga1txXS2XDcd9LQgFGXe"
     }
   },
   "updateState": {
     "version": 2,
     "lastDailyRun": {
-      "completedAt": "2026-11-07T11:02:08.015Z",
+      "completedAt": "2026-11-08T11:15:11.509Z",
       "estimatedHeliusCredits": 50,
       "rpcCalls": 5,
       "retries": 0,
