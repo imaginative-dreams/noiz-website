@@ -1,6 +1,6 @@
 {
-  "datasetUpdatedAt": "2026-11-21T12:37:15.890Z",
-  "ansemPriceUsd": 0.03277,
+  "datasetUpdatedAt": "2026-11-22T12:33:06.628Z",
+  "ansemPriceUsd": 0.03907,
   "rewardSource": "BusbejBxcb74pQ5uDfTzNgN2vmcqAMPh4q7tkZaUEnMb",
   "holders": [
     {
@@ -11,7 +11,7 @@
       "rewardingSince": "2026-09-12T23:23:36.000Z",
       "earnedInDays": 20.956641,
       "ansemEarned": 25703.560764,
-      "ansemUsdValue": 842.305686,
+      "ansemUsdValue": 1004.238119,
       "rewardCount": 2607,
       "firstRewardAt": "2026-09-12T23:23:36.000Z",
       "lastRewardAt": "2026-10-03T21:15:38.000Z",
@@ -58,8 +58,8 @@
       "lastSignature": null,
       "rewardCursorSignature": null,
       "rank": 3,
-      "noizBalance": 29758511.628621,
-      "supplyPercentage": 3.122731,
+      "noizBalance": 29848864.293436,
+      "supplyPercentage": 3.132212,
       "tokenAccount": "Gbh2vJUpRepMcKk3VthJfprAmF53a6ejUsgbr9GkR6HK"
     },
     {
@@ -91,7 +91,7 @@
       "rewardingSince": "2026-09-22T13:36:35.000Z",
       "earnedInDays": 11.364291,
       "ansemEarned": 2212.91108,
-      "ansemUsdValue": 72.517096,
+      "ansemUsdValue": 86.458436,
       "rewardCount": 1494,
       "firstRewardAt": "2026-09-22T13:36:35.000Z",
       "lastRewardAt": "2026-10-03T21:15:27.000Z",
@@ -110,7 +110,7 @@
     "rewardingSince": "2026-09-12T23:23:36.000Z",
     "earnedInDays": 20.956641,
     "ansemEarned": 25703.560764,
-    "ansemUsdValue": 842.305686,
+    "ansemUsdValue": 1004.238119,
     "rewardCount": 2607,
     "firstRewardAt": "2026-09-12T23:23:36.000Z",
     "lastRewardAt": "2026-10-03T21:15:38.000Z",
@@ -121,8 +121,8 @@
     "rewardCursorSignature": null,
     "tokenAccount": "86GEntc2BA8MHBzKTfSS9kD3ArEspzGWJhaxAfXhoL15"
   },
-  "rankingUpdatedAt": "2026-11-21T12:37:15.890Z",
-  "priceUpdatedAt": "2026-11-21T12:37:15.890Z",
+  "rankingUpdatedAt": "2026-11-22T12:33:06.628Z",
+  "priceUpdatedAt": "2026-11-22T12:33:06.628Z",
   "rewardsUpdatedAt": "2026-10-03T22:21:09.761Z",
   "holderHistory": {
     "2nKeNVKDFsj6zGsU1DzgxRzXPKhxxFvCDhA9d5V3wT21": {
@@ -152,7 +152,7 @@
       "rewardingSince": "2026-09-22T13:36:35.000Z",
       "earnedInDays": 11.364291,
       "ansemEarned": 2212.91108,
-      "ansemUsdValue": 72.517096,
+      "ansemUsdValue": 86.458436,
       "rewardCount": 1494,
       "firstRewardAt": "2026-09-22T13:36:35.000Z",
       "lastRewardAt": "2026-10-03T21:15:27.000Z",
@@ -170,7 +170,7 @@
       "rewardingSince": "2026-09-12T23:23:36.000Z",
       "earnedInDays": 20.956641,
       "ansemEarned": 25703.560764,
-      "ansemUsdValue": 842.305686,
+      "ansemUsdValue": 1004.238119,
       "rewardCount": 2607,
       "firstRewardAt": "2026-09-12T23:23:36.000Z",
       "lastRewardAt": "2026-10-03T21:15:38.000Z",
@@ -413,8 +413,8 @@
       "lastSignature": null,
       "rewardCursorSignature": null,
       "rank": 3,
-      "noizBalance": 29758511.628621,
-      "supplyPercentage": 3.122731,
+      "noizBalance": 29848864.293436,
+      "supplyPercentage": 3.132212,
       "tokenAccount": "Gbh2vJUpRepMcKk3VthJfprAmF53a6ejUsgbr9GkR6HK"
     },
     "3imKME8im3MZjnUSNMNK4w16DtEQyNUrvpBDkQxN85ft": {
@@ -501,7 +501,7 @@
   "updateState": {
     "version": 2,
     "lastDailyRun": {
-      "completedAt": "2026-11-21T12:37:15.890Z",
+      "completedAt": "2026-11-22T12:33:06.628Z",
       "estimatedHeliusCredits": 50,
       "rpcCalls": 5,
       "retries": 0,
